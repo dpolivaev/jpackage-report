@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+}
+
+sourceSets {
+    library {}
+    plugin {}
+}
+
+repositories {
+    jcenter()
+}
+
+jar {
+  archiveName = 'main.jar'
+  manifest {
+    attributes(
+        'Main-Class': 'App',
+        'Class-Path': 'library.jar'
+    )
+  }
+}
+
+task libraryJar(type: Jar) {
+    manifest = project.manifest {
+        attributes("Manifest-Version": "1.0")
+    }
+    archiveName = 'library.jar'
+    from (sourceSets.library.output)
+}
+
+task pluginJar(type: Jar) {
+    manifest = project.manifest {
+        attributes("Manifest-Version": "1.0")
+    }
+    archiveName = 'plugin.jar'
+    from (sourceSets.plugin.output)
+}
+
+assemble {
+    dependsOn libraryJar
+    dependsOn pluginJar
+}
